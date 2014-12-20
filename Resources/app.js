@@ -28,9 +28,10 @@
       borderRadius:3
   });
     
-  ConnectButton.addEventListener("click",function(){
-  
-      Hue.Discover({
+  ConnectButton.addEventListener("click",HueDiscover);
+
+ function HueDiscover(){
+ Hue.Discover({
           success:function(bridges){
                 
                 var Bridge = Hue.Bridge(bridges[0].internalipaddress);
@@ -42,15 +43,64 @@
                 
                   ConnectButton.title="CONNECTED";
                   ConnectButton.backgroundColor = "#009900";
+                  ConnectButton.removeEventListener('click',HueDiscover);
                   
-                      User.SetLightState({
-                          id:4,
+                  
+                  var ButtonOn = Ti.UI.createButton({
+                      title:"Turn on all lights",
+                      width:130,
+                      left:20,
+                      height:60,
+                      bottom:200,
+                      color:"#333",
+                      backgroundColor:"#fff",
+                      borderColor:"#000",
+                      borderRadius:3
+                  }); 
+                  
+                  var ButtonOff = Ti.UI.createButton({
+                      title:"Turn off all lights",
+                      width:130,
+                      right:20,
+                      height:60,
+                      bottom:200,
+                      color:"#333",
+                      backgroundColor:"#fff",
+                      borderColor:"#000",
+                      borderRadius:3
+                  }); 
+                  
+                  
+                  win.add(ButtonOn);
+                  win.add(ButtonOff);
+                  
+                  ButtonOn.addEventListener("click",function(){
+                      Ti.API.log("ON");
+                      User.SetGroupState({
+                          id:0,
+                          body:{
+                              on:true
+                          },
+                          success:function(response){},
+                          error:function(response){}
+                      });
+                      
+                  });
+                  
+                  ButtonOff.addEventListener("click",function(){
+                      Ti.API.log("OFF");
+                      User.SetGroupState({
+                          id:0,
                           body:{
                               on:false
                           },
                           success:function(response){},
                           error:function(response){}
                       });
+                      
+                  });
+                  
+
                       
                   },
                   error:function(response){
@@ -59,10 +109,8 @@
                 });
 
           }
-      });
-      
-  });
-  
+      });     
+ };  
 
  win.add(TextLabel);
  win.add(ConnectButton);
