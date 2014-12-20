@@ -1,64 +1,63 @@
-// this sets the background color of the master UIView (when there are no windows/tab groups on it)
-Titanium.UI.setBackgroundColor('#000');
+(function() {
 
-// create tab group
-var tabGroup = Titanium.UI.createTabGroup();
+  var TiHue = require("/lib/Ti.Hue");
+  var Hue = new TiHue.Hue();    
+    
+  var win = Ti.UI.createWindow({
+      backgroundColor:"#333"
+  }); 
+  
+  var TextLabel = Ti.UI.createLabel({
+      text:"1) Go and press the button on the bridge and then press the CONNECT button and you should get a success response.",
+      top:60,
+      left:10,
+      right:10,
+      color:"#fff"
+  });
+  
+  
+  var ConnectButton = Ti.UI.createButton({
+      title:"CONNECT",
+      bottom:100,
+      color:"#333",
+      backgroundColor:"#fff",
+      borderColor:"#000",
+      borderRadius:3
+  });
+    
+  ConnectButton.addEventListener("click",function(){
+  
+      Hue.Discover({
+          success:function(bridges){
+    
+              var Bridge = Hue.Bridge(bridges[0].internalipaddress);
+              var User = Bridge.User(Ti.Platform.id);
+    
+              
+              User.SetLightState({
+                  id:1,
+                  body:{
+                      on:true
+                  },
+                  success:function(response){
+                      Ti.API.log("success: "+ JSON.stringify(response));
+                  },
+                  error:function(response){
+                      Ti.API.log("error: "+ JSON.stringify(response));
+                  }
+              });
+              
+          }
+      });
+      
+  });
+  
+
+ win.add(TextLabel);
+ wind.add(ConnectButton);
+ win.open();
+
+})();
 
 
-//
-// create base UI tab and root window
-//
-var win1 = Titanium.UI.createWindow({  
-    title:'Tab 1',
-    backgroundColor:'#fff'
-});
-var tab1 = Titanium.UI.createTab({  
-    icon:'KS_nav_views.png',
-    title:'Tab 1',
-    window:win1
-});
-
-var label1 = Titanium.UI.createLabel({
-	color:'#999',
-	text:'I am Window 1',
-	font:{fontSize:20,fontFamily:'Helvetica Neue'},
-	textAlign:'center',
-	width:'auto'
-});
-
-win1.add(label1);
-
-//
-// create controls tab and root window
-//
-var win2 = Titanium.UI.createWindow({  
-    title:'Tab 2',
-    backgroundColor:'#fff'
-});
-var tab2 = Titanium.UI.createTab({  
-    icon:'KS_nav_ui.png',
-    title:'Tab 2',
-    window:win2
-});
-
-var label2 = Titanium.UI.createLabel({
-	color:'#999',
-	text:'I am Window 2',
-	font:{fontSize:20,fontFamily:'Helvetica Neue'},
-	textAlign:'center',
-	width:'auto'
-});
-
-win2.add(label2);
-
-
-
-//
-//  add tabs
-//
-tabGroup.addTab(tab1);  
-tabGroup.addTab(tab2);  
-
-
-// open tab group
-tabGroup.open();
+ 
