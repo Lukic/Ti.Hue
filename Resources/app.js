@@ -10,14 +10,17 @@
   var TextLabel = Ti.UI.createLabel({
       text:"1) Go and press the button on the bridge and then press the CONNECT button and you should get a success response.",
       top:60,
-      left:10,
-      right:10,
+      left:20,
+      right:20,
       color:"#fff"
   });
   
   
   var ConnectButton = Ti.UI.createButton({
       title:"CONNECT",
+      left:20,
+      right:20,
+      height:60,
       bottom:100,
       color:"#333",
       backgroundColor:"#fff",
@@ -29,24 +32,32 @@
   
       Hue.Discover({
           success:function(bridges){
-    
-              var Bridge = Hue.Bridge(bridges[0].internalipaddress);
-              var User = Bridge.User(Ti.Platform.id);
-    
+                
+                var Bridge = Hue.Bridge(bridges[0].internalipaddress);
+                var User = Bridge.User(Ti.Platform.id);
               
-              User.SetLightState({
-                  id:1,
-                  body:{
-                      on:true
-                  },
+                User.Create({
+                  devicetype:"test user",
                   success:function(response){
-                      Ti.API.log("success: "+ JSON.stringify(response));
+                
+                  ConnectButton.title="CONNECTED";
+                  ConnectButton.backgroundColor = "#009900";
+                  
+                      User.SetLightState({
+                          id:4,
+                          body:{
+                              on:false
+                          },
+                          success:function(response){},
+                          error:function(response){}
+                      });
+                      
                   },
                   error:function(response){
-                      Ti.API.log("error: "+ JSON.stringify(response));
+                        alert(JSON.stringify(response));
                   }
-              });
-              
+                });
+
           }
       });
       
@@ -54,7 +65,7 @@
   
 
  win.add(TextLabel);
- wind.add(ConnectButton);
+ win.add(ConnectButton);
  win.open();
 
 })();
