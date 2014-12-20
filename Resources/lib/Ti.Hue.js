@@ -13,7 +13,9 @@ Hue.prototype.xhr = function(args){
     var client = Ti.Network.createHTTPClient({
          onload : function(e) {
              var json = JSON.parse(this.responseText);
-             args.success(json);
+             
+                 args.success(json);
+
          },
          onerror : function(e) {
              args.error(e.error);
@@ -66,16 +68,21 @@ Hue.prototype.Bridge = function(ip) {
                  /* User / Config API               */
                  /* =============================== */
                  Create: function(args){
-                     var data = {
-                         devicetype:args.devicetype,
-                         username:username
-                     };
                      _this.xhr({
                         method:"POST",
                         url:_bridgeUrl,
-                        body:JSON.stringify(data),
+                        body:{
+                         devicetype:args.devicetype,
+                         username:username
+                     },
                         success:function(response){
-                            args.success(response);
+                            
+                            if(response[0].success){
+                                 args.success(response);
+                             }else{
+                                 args.error(response);
+                             }
+
                         },
                         error:function(response){
                             args.error(response);
