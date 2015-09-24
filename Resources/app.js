@@ -30,6 +30,8 @@
     
   ConnectButton.addEventListener("click",HueDiscover);
 
+// ekstra comment
+
  function HueDiscover(){
  Hue.Discover({
           success:function(bridges){
