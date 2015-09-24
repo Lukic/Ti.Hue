@@ -26,7 +26,7 @@ Hue.prototype.xhr = function(args){
      client.send(body);  
 };
 
-
+//Data
 Hue.prototype.Discover = function(args){
     this.xhr({
         method:"GET",
